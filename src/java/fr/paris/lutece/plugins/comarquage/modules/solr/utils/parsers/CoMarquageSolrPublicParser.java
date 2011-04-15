@@ -40,12 +40,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
 import fr.paris.lutece.plugins.search.solr.indexer.SolrItem;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
@@ -80,7 +83,7 @@ public class CoMarquageSolrPublicParser extends DefaultHandler
     private static final String SITE = AppPropertiesService.getProperty( "lutece.name" );
 
     // Index type
-    private static final String PROPERTY_INDEXING_TYPE = "comarquage.indexing.publicType";
+    private static final String PROPERTY_INDEXING_TYPE = "comarquage-solr.indexing.publicType";
 
     // Paths contents
     private static final String PROPERTY_PATH_BASE = "lutece.portal.path";
@@ -279,7 +282,7 @@ public class CoMarquageSolrPublicParser extends DefaultHandler
             // * FIELD_TYPE		: stored and indexed (without the analyser) -> allows to filter the search by type
             item.setUrl( strFullUrl );
             item.setDate( dateUpdate );
-            item.setUid( SITE + "_" + _strType + "_" + strPath );
+            item.setUid( strPath );
             item.setContent( strContents );
             item.setTitle( _strTitle );
             item.setType( _strType );

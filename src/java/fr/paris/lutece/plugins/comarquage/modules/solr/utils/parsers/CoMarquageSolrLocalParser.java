@@ -78,7 +78,7 @@ public class CoMarquageSolrLocalParser extends DefaultHandler
     private static final String SITE = AppPropertiesService.getProperty( "lutece.name" );
 
     // Index type
-    private static final String PROPERTY_INDEXING_TYPE = "comarquage.indexing.localType";
+    private static final String PROPERTY_INDEXING_TYPE = "comarquage-solr.indexing.localType";
 
     // Path contents
     private static final String PROPERTY_PATH_BASE = "lutece.portal.path";
@@ -247,7 +247,7 @@ public class CoMarquageSolrLocalParser extends DefaultHandler
 
         item.setUrl( strFullUrl );
         item.setDate( dateUpdate );
-        item.setUid( SITE + "_" + _strType + "_" + strId );
+        item.setUid( strId );
         item.setContent( _strContents );
         item.setTitle( _strTitle );
         item.setType( _strType );
