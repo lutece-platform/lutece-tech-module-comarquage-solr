@@ -40,15 +40,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
 import fr.paris.lutece.plugins.search.solr.indexer.SolrItem;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
@@ -79,11 +76,12 @@ public class CoMarquageSolrPublicParser extends DefaultHandler
     private static final String PROPERTY_XPATH_THEME = "comarquage.parser.xpath.public.theme";
     private static final String PROPERTY_XPATH_KEYWORDS = "comarquage.parser.xpath.public.keywords";
 
-    // Site
-    private static final String SITE = AppPropertiesService.getProperty( "lutece.name" );
-
     // Index type
     private static final String PROPERTY_INDEXING_TYPE = "comarquage-solr.indexing.publicType";
+
+    // Site name
+    private static final String PROPERTY_SITE = "lutece.name";
+    private static final String PROPERTY_PROD_URL = "lutece.prod.url";
 
     // Paths contents
     private static final String PROPERTY_PATH_BASE = "lutece.portal.path";
@@ -115,6 +113,8 @@ public class CoMarquageSolrPublicParser extends DefaultHandler
     private String _strDate;
     private String _strType;
     private String _strTitle;
+    private String _strSite;
+    private String _strProdUrl;
     private String _strTheme;
     private String _strKeywords;
 
@@ -132,6 +132,17 @@ public class CoMarquageSolrPublicParser extends DefaultHandler
 
         // Initializes the indexing type
         _strType = AppPropertiesService.getProperty( PROPERTY_INDEXING_TYPE );
+
+        // Initializes the site
+        _strSite = AppPropertiesService.getProperty( PROPERTY_SITE );
+
+        // Initializes the prod url
+        _strProdUrl = AppPropertiesService.getProperty( PROPERTY_PROD_URL );
+
+        if ( !_strProdUrl.endsWith( "/" ) )
+        {
+            _strProdUrl = _strProdUrl + "/";
+        }
 
         try
         {
@@ -249,7 +260,7 @@ public class CoMarquageSolrPublicParser extends DefaultHandler
             String strUrlId = STRING_AMP + AppPropertiesService.getProperty( PROPERTY_PATH_ID ) + STRING_EQUAL;
             String strPluginName = AppPropertiesService.getProperty( PROPERTY_PLUGIN_NAME );
 
-            String strFullUrl = strUrlBase + strUrlPage + strPluginName + strUrlId + strPath;
+            String strFullUrl = _strProdUrl + strUrlBase + strUrlPage + strPluginName + strUrlId + strPath;
 
             // Sets the contents
             String strContents = _strTitle + STRING_SPACE + _strKeywords + STRING_SPACE + _strTheme;
@@ -286,7 +297,7 @@ public class CoMarquageSolrPublicParser extends DefaultHandler
             item.setContent( strContents );
             item.setTitle( _strTitle );
             item.setType( _strType );
-            item.setSite( SITE );
+            item.setSite( _strSite );
 
             // Adds the new item to the map
             _listSolrItems.put( getLog( item ), item );

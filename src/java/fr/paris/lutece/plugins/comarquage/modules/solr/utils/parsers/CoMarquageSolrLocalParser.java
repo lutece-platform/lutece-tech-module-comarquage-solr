@@ -74,11 +74,12 @@ public class CoMarquageSolrLocalParser extends DefaultHandler
     private static final String PROPERTY_XPATH_TITLE = "comarquage.parser.xpath.local.title";
     private static final String PROPERTY_ATTRIBUTE_URL = "comarquage.parser.xpath.local.attribute.url";
 
-    // Site
-    private static final String SITE = AppPropertiesService.getProperty( "lutece.name" );
-
     // Index type
     private static final String PROPERTY_INDEXING_TYPE = "comarquage-solr.indexing.localType";
+
+    // Site name
+    private static final String PROPERTY_SITE = "lutece.name";
+    private static final String PROPERTY_PROD_URL = "lutece.prod.url";
 
     // Path contents
     private static final String PROPERTY_PATH_BASE = "lutece.portal.path";
@@ -111,6 +112,8 @@ public class CoMarquageSolrLocalParser extends DefaultHandler
     private String _strURL;
     private String _strDate;
     private String _strType;
+    private String _strSite;
+    private String _strProdUrl;
     private String _strTitle;
     private String _strContents;
 
@@ -129,6 +132,17 @@ public class CoMarquageSolrLocalParser extends DefaultHandler
 
         // Initializes the indexing type
         _strType = AppPropertiesService.getProperty( PROPERTY_INDEXING_TYPE );
+
+        // Initializes the site
+        _strSite = AppPropertiesService.getProperty( PROPERTY_SITE );
+
+        // Initializes the prod url
+        _strProdUrl = AppPropertiesService.getProperty( PROPERTY_PROD_URL );
+
+        if ( !_strProdUrl.endsWith( "/" ) )
+        {
+            _strProdUrl = _strProdUrl + "/";
+        }
 
         try
         {
@@ -224,7 +238,7 @@ public class CoMarquageSolrLocalParser extends DefaultHandler
         String strPluginName = AppPropertiesService.getProperty( PROPERTY_PLUGIN_NAME );
         String strUrlId = STRING_AMP + AppPropertiesService.getProperty( PROPERTY_PATH_ID ) + STRING_EQUAL;
 
-        String strFullUrl = strUrlBase + strUrlPage + strPluginName + strUrlId + strId;
+        String strFullUrl = _strProdUrl + strUrlBase + strUrlPage + strPluginName + strUrlId + strId;
 
         // Converts the date from "dd MMMMM yyyy" to "yyyyMMdd"
         Locale locale = Locale.FRENCH;
@@ -251,7 +265,7 @@ public class CoMarquageSolrLocalParser extends DefaultHandler
         item.setContent( _strContents );
         item.setTitle( _strTitle );
         item.setType( _strType );
-        item.setSite( SITE );
+        item.setSite( _strSite );
 
         // Adds the new item to the list
         _listSolrItems.put( getLog( item ), item );
