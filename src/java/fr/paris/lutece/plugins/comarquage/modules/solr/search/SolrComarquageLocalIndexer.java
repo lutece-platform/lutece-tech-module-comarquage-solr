@@ -33,21 +33,13 @@
  */
 package fr.paris.lutece.plugins.comarquage.modules.solr.search;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.lucene.document.Document;
-import org.apache.solr.client.solrj.SolrServer;
-import org.apache.solr.client.solrj.SolrServerException;
-
 import fr.paris.lutece.plugins.comarquage.modules.solr.utils.parsers.CoMarquageSolrLocalParser;
-import fr.paris.lutece.plugins.comarquage.util.parsers.CoMarquageLocalParser;
-import fr.paris.lutece.plugins.search.solr.business.SolrServerService;
 import fr.paris.lutece.plugins.search.solr.business.field.Field;
 import fr.paris.lutece.plugins.search.solr.indexer.SolrIndexer;
 import fr.paris.lutece.plugins.search.solr.indexer.SolrItem;
-import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
 
@@ -61,7 +53,7 @@ public class SolrComarquageLocalIndexer implements SolrIndexer
     private static final String PROPERTY_NAME = "comarquage-solr.indexing.localIndexer.name";
     private static final String PROPERTY_VERSION = "comarquage-solr.indexing.localIndexer.version";
     private static final String PROPERTY_INDEXER_ENABLE = "comarquage-solr.indexing.localIndexer.enable";
-    
+
     public String getDescription(  )
     {
         return AppPropertiesService.getProperty( PROPERTY_DESCRIPTION );
@@ -81,7 +73,8 @@ public class SolrComarquageLocalIndexer implements SolrIndexer
     {
         // Parses the local cards
         CoMarquageSolrLocalParser localParser = new CoMarquageSolrLocalParser(  );
-       	return localParser.getLocalSolrItems(  );
+
+        return localParser.getLocalSolrItems(  );
     }
 
     public boolean isEnable(  )
@@ -89,8 +82,9 @@ public class SolrComarquageLocalIndexer implements SolrIndexer
         return "true".equalsIgnoreCase( AppPropertiesService.getProperty( PROPERTY_INDEXER_ENABLE ) );
     }
 
-	public List<Field> getAdditionalFields() {
-		// No additional fields for this indexer
-		return null;
-	}
+    public List<Field> getAdditionalFields(  )
+    {
+        // No additional fields for this indexer
+        return new ArrayList<Field>(  );
+    }
 }

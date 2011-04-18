@@ -33,13 +33,10 @@
  */
 package fr.paris.lutece.plugins.comarquage.modules.solr.search;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.solr.client.solrj.SolrServer;
-
 import fr.paris.lutece.plugins.comarquage.modules.solr.utils.parsers.CoMarquageSolrPublicParser;
-import fr.paris.lutece.plugins.search.solr.business.SolrServerService;
 import fr.paris.lutece.plugins.search.solr.business.field.Field;
 import fr.paris.lutece.plugins.search.solr.indexer.SolrIndexer;
 import fr.paris.lutece.plugins.search.solr.indexer.SolrItem;
@@ -56,7 +53,7 @@ public class SolrComarquagePublicIndexer implements SolrIndexer
     private static final String PROPERTY_NAME = "comarquage-solr.indexing.publicIndexer.name";
     private static final String PROPERTY_VERSION = "comarquage-solr.indexing.publicIndexer.version";
     private static final String PROPERTY_INDEXER_ENABLE = "comarquage-solr.indexing.publicIndexer.enable";
-    
+
     public String getDescription(  )
     {
         return AppPropertiesService.getProperty( PROPERTY_DESCRIPTION );
@@ -76,7 +73,8 @@ public class SolrComarquagePublicIndexer implements SolrIndexer
     {
         // Parses the Public cards
         CoMarquageSolrPublicParser localParser = new CoMarquageSolrPublicParser(  );
-       	return localParser.getPublicSolrItems(  );
+
+        return localParser.getPublicSolrItems(  );
     }
 
     public boolean isEnable(  )
@@ -84,9 +82,9 @@ public class SolrComarquagePublicIndexer implements SolrIndexer
         return "true".equalsIgnoreCase( AppPropertiesService.getProperty( PROPERTY_INDEXER_ENABLE ) );
     }
 
-	public List<Field> getAdditionalFields() {
-		// No additional fields for this indexer
-		return null;
-	}
-
+    public List<Field> getAdditionalFields(  )
+    {
+        // No additional fields for this indexer
+        return new ArrayList<Field>(  );
+    }
 }
