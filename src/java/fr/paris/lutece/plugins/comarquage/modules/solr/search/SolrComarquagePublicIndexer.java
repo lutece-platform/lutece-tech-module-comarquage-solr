@@ -33,14 +33,18 @@
  */
 package fr.paris.lutece.plugins.comarquage.modules.solr.search;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import fr.paris.lutece.plugins.comarquage.modules.solr.utils.parsers.CoMarquageSolrPublicParser;
 import fr.paris.lutece.plugins.search.solr.business.field.Field;
 import fr.paris.lutece.plugins.search.solr.indexer.SolrIndexer;
+import fr.paris.lutece.plugins.search.solr.indexer.SolrIndexerService;
 import fr.paris.lutece.plugins.search.solr.indexer.SolrItem;
+import fr.paris.lutece.portal.service.message.SiteMessageException;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+
+import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -54,37 +58,88 @@ public class SolrComarquagePublicIndexer implements SolrIndexer
     private static final String PROPERTY_VERSION = "comarquage-solr.indexing.publicIndexer.version";
     private static final String PROPERTY_INDEXER_ENABLE = "comarquage-solr.indexing.publicIndexer.enable";
 
+    /**
+     * {@inheritDoc}
+     */
     public String getDescription(  )
     {
         return AppPropertiesService.getProperty( PROPERTY_DESCRIPTION );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getName(  )
     {
         return AppPropertiesService.getProperty( PROPERTY_NAME );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String getVersion(  )
     {
         return AppPropertiesService.getProperty( PROPERTY_VERSION );
     }
 
-    public Map<String, SolrItem> index(  )
+    /**
+     * {@inheritDoc}
+     */
+    public void indexDocuments(  ) throws IOException, InterruptedException, SiteMessageException
     {
         // Parses the Public cards
         CoMarquageSolrPublicParser localParser = new CoMarquageSolrPublicParser(  );
 
-        return localParser.getPublicSolrItems(  );
+        // Gets the list of solr documents (to add to the index)
+        List<SolrItem> listDocuments = localParser.getPublicSolrItems(  );
+
+        for ( SolrItem solrItem : listDocuments )
+        {
+            SolrIndexerService.write( solrItem );
+        }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public boolean isEnable(  )
     {
         return "true".equalsIgnoreCase( AppPropertiesService.getProperty( PROPERTY_INDEXER_ENABLE ) );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public List<Field> getAdditionalFields(  )
     {
         // No additional fields for this indexer
         return new ArrayList<Field>(  );
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<SolrItem> getDocuments( String strIdDocument )
+    {
+        // There is no incremental indexation
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getResourceUid( String strResourceId, String strResourceType )
+    {
+        // There is no incremental indexation
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<String> getResourcesName(  )
+    {
+        // There is no incremental indexation
+        return null;
     }
 }

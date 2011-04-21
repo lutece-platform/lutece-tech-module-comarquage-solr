@@ -33,23 +33,28 @@
  */
 package fr.paris.lutece.plugins.comarquage.modules.solr.utils.parsers;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 import fr.paris.lutece.plugins.search.solr.indexer.SolrItem;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import java.io.IOException;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 
 /**
@@ -102,8 +107,8 @@ public class CoMarquageSolrPublicParser extends DefaultHandler
     // -------------
     // - Variables -
     // -------------
-    // Map of Solr items
-    private Map<String, SolrItem> _listSolrItems;
+    // List of Solr items
+    private List<SolrItem> _listSolrItems;
 
     // XPath
     private String _strXPath;
@@ -128,7 +133,7 @@ public class CoMarquageSolrPublicParser extends DefaultHandler
                 PROPERTY_LIST_CDC_INDEX_KEYS_FRAGMENT );
 
         // Initializes the Solr Item list
-        _listSolrItems = new HashMap<String, SolrItem>(  );
+        _listSolrItems = new ArrayList<SolrItem>(  );
 
         // Initializes the indexing type
         _strType = AppPropertiesService.getProperty( PROPERTY_INDEXING_TYPE );
@@ -300,7 +305,7 @@ public class CoMarquageSolrPublicParser extends DefaultHandler
             item.setSite( _strSite );
 
             // Adds the new item to the map
-            _listSolrItems.put( getLog( item ), item );
+            _listSolrItems.add( item );
         }
 
         // Updates the XPath
@@ -369,27 +374,8 @@ public class CoMarquageSolrPublicParser extends DefaultHandler
      *
      * @return The list of Solr items
      */
-    public Map<String, SolrItem> getPublicSolrItems(  )
+    public List<SolrItem> getPublicSolrItems(  )
     {
         return _listSolrItems;
-    }
-
-    /**
-     * Generate the log line for the specified {@link SolrItem}
-     * @param item The {@link SolrItem}
-     * @return The string representing the log line
-     */
-    private String getLog( SolrItem item )
-    {
-        StringBuilder sbLogs = new StringBuilder(  );
-        sbLogs.append( "indexing " );
-        sbLogs.append( item.getType(  ) );
-        sbLogs.append( " id : " );
-        sbLogs.append( item.getUid(  ) );
-        sbLogs.append( " Title : " );
-        sbLogs.append( item.getTitle(  ) );
-        sbLogs.append( "<br/>" );
-
-        return sbLogs.toString(  );
     }
 }
