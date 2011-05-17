@@ -52,6 +52,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import fr.paris.lutece.plugins.search.solr.indexer.SolrIndexerService;
 import fr.paris.lutece.plugins.search.solr.indexer.SolrItem;
+import fr.paris.lutece.plugins.search.solr.util.SolrConstants;
 import fr.paris.lutece.portal.service.content.XPageAppService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
@@ -95,6 +96,7 @@ public class CoMarquageSolrLocalParser extends DefaultHandler
     private static final String STRING_POINT = ".";
     private static final String STRING_SLASH = "/";
     private static final String STRING_SPACE = " ";
+    private static final String SHORT_NAME = "comgeloc";
 
     // -------------
     // - Variables -
@@ -255,7 +257,7 @@ public class CoMarquageSolrLocalParser extends DefaultHandler
 
         item.setUrl( url.getUrl(  ) );
         item.setDate( dateUpdate );
-        item.setUid( strId );
+        item.setUid( strId + SolrConstants.CONSTANT_UNDERSCORE + SHORT_NAME );
         item.setContent( _strContents );
         item.setTitle( _strTitle );
         item.setType( _strType );

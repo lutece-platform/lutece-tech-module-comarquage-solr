@@ -33,23 +33,9 @@
  */
 package fr.paris.lutece.plugins.comarquage.modules.solr.utils.parsers;
 
-import fr.paris.lutece.plugins.search.solr.indexer.SolrIndexerService;
-import fr.paris.lutece.plugins.search.solr.indexer.SolrItem;
-import fr.paris.lutece.portal.service.content.XPageAppService;
-import fr.paris.lutece.portal.service.util.AppLogService;
-import fr.paris.lutece.portal.service.util.AppPathService;
-import fr.paris.lutece.portal.service.util.AppPropertiesService;
-import fr.paris.lutece.util.url.UrlItem;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
-
 import java.io.IOException;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -58,6 +44,18 @@ import java.util.Locale;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import fr.paris.lutece.plugins.search.solr.indexer.SolrItem;
+import fr.paris.lutece.plugins.search.solr.util.SolrConstants;
+import fr.paris.lutece.portal.service.content.XPageAppService;
+import fr.paris.lutece.portal.service.util.AppLogService;
+import fr.paris.lutece.portal.service.util.AppPathService;
+import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.util.url.UrlItem;
 
 
 /**
@@ -102,7 +100,8 @@ public class CoMarquageSolrPublicParser extends DefaultHandler
     private static final String STRING_EQUAL = "=";
     private static final String STRING_SLASH = "/";
     private static final String STRING_SPACE = " ";
-
+    private static final String SHORT_NAME = "comgepub";
+    
     // -------------
     // - Variables -
     // -------------
@@ -294,7 +293,7 @@ public class CoMarquageSolrPublicParser extends DefaultHandler
             // * FIELD_TYPE		: stored and indexed (without the analyser) -> allows to filter the search by type
             item.setUrl( url.getUrl(  ) );
             item.setDate( dateUpdate );
-            item.setUid( strPath );
+            item.setUid( strPath + SolrConstants.CONSTANT_UNDERSCORE + SHORT_NAME );
             item.setContent( strContents );
             item.setTitle( _strTitle );
             item.setType( _strType );
