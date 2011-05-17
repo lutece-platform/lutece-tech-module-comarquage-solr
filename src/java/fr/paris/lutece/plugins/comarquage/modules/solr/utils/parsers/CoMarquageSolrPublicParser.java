@@ -33,10 +33,13 @@
  */
 package fr.paris.lutece.plugins.comarquage.modules.solr.utils.parsers;
 
+import fr.paris.lutece.plugins.search.solr.indexer.SolrIndexerService;
 import fr.paris.lutece.plugins.search.solr.indexer.SolrItem;
+import fr.paris.lutece.portal.service.content.XPageAppService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPathService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
+import fr.paris.lutece.util.url.UrlItem;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -89,18 +92,14 @@ public class CoMarquageSolrPublicParser extends DefaultHandler
     private static final String PROPERTY_PROD_URL = "lutece.prod.url";
 
     // Paths contents
-    private static final String PROPERTY_PATH_BASE = "lutece.portal.path";
     private static final String PROPERTY_PATH_ID = "comarquage.parser.path.id";
-    private static final String PATH_PAGE = "page";
 
     // URL delimiter
     private static final String PROPERTY_URL_DELIMITER = "comarquage.parser.url.public.delimiter";
 
     // Strings
-    private static final String STRING_AMP = "&amp;";
     private static final String STRING_EMPTY = "";
     private static final String STRING_EQUAL = "=";
-    private static final String STRING_QUESTION = "?";
     private static final String STRING_SLASH = "/";
     private static final String STRING_SPACE = " ";
 
@@ -260,13 +259,10 @@ public class CoMarquageSolrPublicParser extends DefaultHandler
             String strPath = _strUrl.split( strDelimiter )[1];
 
             // Sets the full URL
-            String strUrlBase = AppPropertiesService.getProperty( PROPERTY_PATH_BASE );
-            String strUrlPage = STRING_QUESTION + PATH_PAGE + STRING_EQUAL;
-            String strUrlId = STRING_AMP + AppPropertiesService.getProperty( PROPERTY_PATH_ID ) + STRING_EQUAL;
-            String strPluginName = AppPropertiesService.getProperty( PROPERTY_PLUGIN_NAME );
-
-            String strFullUrl = _strProdUrl + strUrlBase + strUrlPage + strPluginName + strUrlId + strPath;
-
+            UrlItem url = new UrlItem( _strProdUrl );
+            url.addParameter( XPageAppService.PARAM_XPAGE_APP, AppPropertiesService.getProperty( PROPERTY_PLUGIN_NAME ) );
+            url.addParameter( AppPropertiesService.getProperty( PROPERTY_PATH_ID ), strPath );
+            
             // Sets the contents
             String strContents = _strTitle + STRING_SPACE + _strKeywords + STRING_SPACE + _strTheme;
 
@@ -296,7 +292,7 @@ public class CoMarquageSolrPublicParser extends DefaultHandler
             // * FIELD_CONTENTS	: not stored (saves disk space) and indexed (with the analyser)
             // * FIELD_TITLE	: stored and not indexed (the title already exists in the contents)
             // * FIELD_TYPE		: stored and indexed (without the analyser) -> allows to filter the search by type
-            item.setUrl( strFullUrl );
+            item.setUrl( url.getUrl(  ) );
             item.setDate( dateUpdate );
             item.setUid( strPath );
             item.setContent( strContents );
