@@ -33,18 +33,16 @@
  */
 package fr.paris.lutece.plugins.comarquage.modules.solr.search;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fr.paris.lutece.plugins.comarquage.modules.solr.utils.parsers.CoMarquageSolrLocalParser;
 import fr.paris.lutece.plugins.search.solr.business.field.Field;
 import fr.paris.lutece.plugins.search.solr.indexer.SolrIndexer;
 import fr.paris.lutece.plugins.search.solr.indexer.SolrIndexerService;
 import fr.paris.lutece.plugins.search.solr.indexer.SolrItem;
-import fr.paris.lutece.portal.service.message.SiteMessageException;
+import fr.paris.lutece.portal.service.util.AppLogService;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
-
-import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -58,6 +56,8 @@ public class SolrComarquageLocalIndexer implements SolrIndexer
     private static final String PROPERTY_VERSION = "comarquage-solr.indexing.localIndexer.version";
     private static final String PROPERTY_INDEXER_ENABLE = "comarquage-solr.indexing.localIndexer.enable";
 
+    private static final String COM_INDEXATION_ERROR = "[SolrComarquageLocalIndexer] An error occured during the indexation of a local element ";
+    
     /**
      * {@inheritDoc}
      */
@@ -85,7 +85,7 @@ public class SolrComarquageLocalIndexer implements SolrIndexer
     /**
      * {@inheritDoc}
      */
-    public void indexDocuments(  ) throws IOException, InterruptedException, SiteMessageException
+    public List<String> indexDocuments(  )
     {
         // Parses the local cards
         CoMarquageSolrLocalParser localParser = new CoMarquageSolrLocalParser(  );
@@ -93,10 +93,22 @@ public class SolrComarquageLocalIndexer implements SolrIndexer
         // Gets the list of solr documents (to add to the index)
         List<SolrItem> listDocuments = localParser.getLocalSolrItems(  );
 
+        List<String> lstErrors = new ArrayList<String>(  );
+        
         for ( SolrItem solrItem : listDocuments )
         {
-            SolrIndexerService.write( solrItem );
+        	try
+        	{
+        		SolrIndexerService.write( solrItem );
+        	}
+            catch ( Exception e )
+			{
+				lstErrors.add( SolrIndexerService.buildErrorMessage( e ) );
+				AppLogService.error( COM_INDEXATION_ERROR , e );
+			}
         }
+        
+        return lstErrors;
     }
 
     /**
